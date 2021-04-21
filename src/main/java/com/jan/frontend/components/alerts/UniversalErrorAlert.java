@@ -1,8 +1,8 @@
 package com.jan.frontend.components.alerts;
 
+import com.jan.backend.ImageService;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import com.jan.backend.ImageService;
 
 public class UniversalErrorAlert extends Alert {
     public UniversalErrorAlert() {
