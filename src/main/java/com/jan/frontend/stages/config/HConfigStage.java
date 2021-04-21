@@ -1,12 +1,11 @@
 package com.jan.frontend.stages.config;
 
-import javafx.scene.image.ImageView;
-import jssc.SerialPort;
-import jssc.SerialPortException;
 import com.jan.backend.ImageService;
 import com.jan.backend.SerialService;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 import com.jan.frontend.components.alerts.ShifterCalibratedAlert;
+import javafx.scene.image.ImageView;
+import jssc.SerialPortException;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

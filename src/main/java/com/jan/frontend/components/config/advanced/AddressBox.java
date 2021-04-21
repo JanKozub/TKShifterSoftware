@@ -9,6 +9,5 @@ public class AddressBox extends ComboBox<Integer> {
         setMinHeight(40);
         setMinWidth(50);
         setLayoutX(20);
-        setLayoutY(15);
     }
 }

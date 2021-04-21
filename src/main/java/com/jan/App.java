@@ -1,9 +1,9 @@
 package com.jan;
 
+import com.jan.frontend.stages.SelectPortStage;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
-import com.jan.frontend.stages.SelectPortStage;
 
 public class App extends Application {
 

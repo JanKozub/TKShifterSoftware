@@ -8,6 +8,8 @@ import jssc.SerialPortTimeoutException;
 public class SerialService {
 
     private final SerialPort serialPort;
+    private Thread thread;
+    private String[] data;
 
     public SerialService(String port) throws SerialPortException {
         serialPort = new SerialPort(port);
@@ -19,6 +21,14 @@ public class SerialService {
         return serialPort;
     }
 
+    public Thread getThread() {
+        return thread;
+    }
+
+    public String[] getData() {
+        return data;
+    }
+
     public int isPortValid() throws SerialPortException, SerialPortTimeoutException {
         writeString("getMode");
         TimeWatch timeWatch = new TimeWatch();
@@ -26,6 +36,9 @@ public class SerialService {
             if (serialPort.isOpened()) {
                 String msg = readString();
                 if (msg.contains("mode")) {
+                    thread = new Thread(this::getDataFromShifter);
+                    thread.start();
+
                     if (msg.contains("1")) {
                         return 1;
                     } else {
@@ -56,13 +69,17 @@ public class SerialService {
         return read.toString().trim();
     }
 
-    public String[] getDataFromShifter() throws SerialPortException, SerialPortTimeoutException {
-        if (serialPort.isOpened()) {
-            String read = readString();
-            if (read.contains("values")) {
-                return read.split("=")[1].split(";");
+    private void getDataFromShifter() {
+        try {
+            while (serialPort.isOpened() && !thread.isInterrupted()) {
+                String read = readString();
+                if (read.contains("values")) {
+                    data = read.split("=")[1].split(";");
+                }
+                Thread.sleep(10);
             }
+        } catch (SerialPortException | SerialPortTimeoutException | InterruptedException serialPortException) {
+            thread.interrupt();
         }
-        return null;
     }
 }
