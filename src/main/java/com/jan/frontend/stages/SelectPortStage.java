@@ -1,7 +1,7 @@
 package com.jan.frontend.stages;
 
 import com.jan.backend.ImageService;
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import com.jan.frontend.components.alerts.OpenPortErrorAlert;
 import com.jan.frontend.components.alerts.WrongPortError;
 import com.jan.frontend.components.selectPortStage.RefreshButton;
@@ -48,6 +48,7 @@ public class SelectPortStage extends Stage {
             try {
                 SerialService serialService = new SerialService(port);
                 int mode = serialService.isPortValid();
+
                 if (mode > 0) {
                     new MainStage(serialService, mode).show();
                     stage.hide();

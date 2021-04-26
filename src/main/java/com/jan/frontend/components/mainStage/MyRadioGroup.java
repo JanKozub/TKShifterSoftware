@@ -6,9 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
-import jssc.SerialPort;
 import jssc.SerialPortException;
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 
 public class MyRadioGroup extends Group {

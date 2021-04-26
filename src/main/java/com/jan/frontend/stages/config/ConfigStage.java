@@ -1,6 +1,6 @@
 package com.jan.frontend.stages.config;
 
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import jssc.SerialPort;
 import com.jan.backend.ImageService;
 import com.jan.frontend.components.config.ConfigLabel;
 import com.jan.frontend.components.config.NextButton;

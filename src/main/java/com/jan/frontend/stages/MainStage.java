@@ -1,6 +1,10 @@
 package com.jan.frontend.stages;
 
 import com.jan.backend.*;
+import com.jan.backend.serial.SerialPortErrorEvent;
+import com.jan.backend.serial.SerialPortValueEvent;
+import com.jan.backend.serial.SerialService;
+import com.jan.backend.serial.SerialServiceListener;
 import com.jan.frontend.components.alerts.ClosePortErrorAlert;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.mainStage.MemoryButton;
@@ -21,8 +25,8 @@ import jssc.SerialPortException;
 public class MainStage extends Stage {
 
     private final ImageView currentGearImage;
-    private final Button configButton;
-    private final Label infoLabel;
+    private final Button configButton = new Button();
+    private final Label infoLabel = new Label();
     private final SerialService serialService;
 
     public MainStage(SerialService serialService, int mode) {
@@ -58,7 +62,6 @@ public class MainStage extends Stage {
         Stage stage3 = new AdvancedConfigStage(serialService);
         stage3.initOwner(this);
 
-        configButton = new Button();
         configButton.setMinSize(210, 75);
         configButton.setLayoutX(20);
         configButton.setLayoutY(115);
@@ -71,7 +74,6 @@ public class MainStage extends Stage {
         advancedConfig.setLayoutY(285);
         advancedConfig.setOnAction(e -> stage3.show());
 
-        infoLabel = new Label();
         infoLabel.setLayoutY(455);
         infoLabel.setLayoutX(25);
 

@@ -1,13 +1,11 @@
 package com.jan.frontend.stages.config;
 
 import com.jan.backend.ImageService;
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 import com.jan.frontend.components.config.advanced.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
@@ -15,7 +13,6 @@ import jssc.SerialPortException;
 @SuppressWarnings("BusyWait")
 public class AdvancedConfigStage extends Stage {
     private final SerialService serialService;
-    private final Label currentOffsetLabel;
     private final AddressBox addrBox;
     private final NumberField numberField;
 
@@ -25,15 +22,11 @@ public class AdvancedConfigStage extends Stage {
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
 
-        currentOffsetLabel = new Label();
-        currentOffsetLabel.setFont(Font.font(20));
-        currentOffsetLabel.setLayoutX(80);
-        currentOffsetLabel.setLayoutY(5);
-
         addrBox = new AddressBox();
         addrBox.setOnAction(e -> refreshOffsetLabel());
         numberField = new NumberField();
-        numberField.setLayoutX(120);
+        numberField.setMaxWidth(100);
+        numberField.setLayoutX(110);
 
         SetButton setButton = new SetButton();
         setButton.setLayoutX(220);
@@ -41,7 +34,7 @@ public class AdvancedConfigStage extends Stage {
 
         refreshOffsetLabel();
 
-        Group offsetGroup = new Group(addrBox, currentOffsetLabel, numberField, setButton);
+        Group offsetGroup = new Group(addrBox, numberField, setButton);
         offsetGroup.setLayoutY(25);
 
         CenteredLabel gearInLabel = new CenteredLabel("Neutral Borders:");
@@ -65,7 +58,7 @@ public class AdvancedConfigStage extends Stage {
     }
 
     private void refreshOffsetLabel() {
-        currentOffsetLabel.setText(getCurrentOffset());
+        numberField.setText(getCurrentOffset());
     }
 
     private void onClick(int addr, String value) {

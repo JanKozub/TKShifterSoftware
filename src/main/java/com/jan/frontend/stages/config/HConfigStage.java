@@ -1,7 +1,7 @@
 package com.jan.frontend.stages.config;
 
 import com.jan.backend.ImageService;
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 import com.jan.frontend.components.alerts.ShifterCalibratedAlert;
 import javafx.scene.image.ImageView;

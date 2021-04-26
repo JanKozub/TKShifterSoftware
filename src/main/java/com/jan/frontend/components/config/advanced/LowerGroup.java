@@ -1,6 +1,6 @@
 package com.jan.frontend.components.config.advanced;
 
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 
 public class LowerGroup extends BorderGroup{
 

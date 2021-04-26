@@ -1,16 +1,13 @@
 package com.jan.frontend.components.config.advanced;
 
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
-import javafx.scene.text.Font;
 import jssc.SerialPortException;
 
 @SuppressWarnings("BusyWait")
 public abstract class BorderGroup extends Group {
 
-    private final Label currentUpper;
-    private final NumberField numberField;
+    private final NumberField numberField = new NumberField();
     private final SerialService serialService;
     private final String letter;
     private int id;
@@ -23,24 +20,20 @@ public abstract class BorderGroup extends Group {
         if (letter.equals("L"))
             id = 10;
 
-        currentUpper = new Label();
-        currentUpper.setFont(Font.font(20));
-        currentUpper.setLayoutY(5);
-        currentUpper.setLayoutX(35);
         refreshLabel();
 
-        numberField = new NumberField();
-        numberField.setLayoutX(120);
+        numberField.setLayoutX(40);
+        numberField.setMaxWidth(170);
 
         SetButton setUpper = new SetButton();
         setUpper.setOnAction(e -> onClick());
         setUpper.setLayoutX(220);
 
-        getChildren().addAll(currentUpper, numberField, setUpper);
+        getChildren().addAll(numberField, setUpper);
     }
 
     public void refreshLabel() {
-        currentUpper.setText(letter + ":" + serialService.getData()[id]);
+        numberField.setText(letter + ":" + serialService.getData()[id]);
     }
 
     public void onClick() {

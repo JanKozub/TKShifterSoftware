@@ -7,7 +7,7 @@ public class AddressBox extends ComboBox<Integer> {
         getItems().setAll(1, 2, 3, 4);
         setValue(1);
         setMinHeight(40);
-        setMinWidth(50);
-        setLayoutX(20);
+        setMinWidth(60);
+        setLayoutX(40);
     }
 }

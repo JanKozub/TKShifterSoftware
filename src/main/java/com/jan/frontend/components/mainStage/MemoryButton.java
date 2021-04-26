@@ -1,9 +1,8 @@
 package com.jan.frontend.components.mainStage;
 
 import javafx.scene.control.Button;
-import jssc.SerialPort;
 import jssc.SerialPortException;
-import com.jan.backend.SerialService;
+import com.jan.backend.serial.SerialService;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 
 public class MemoryButton extends Button {

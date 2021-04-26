@@ -1,4 +1,4 @@
-package com.jan.backend;
+package com.jan.backend.serial;
 
 public class SerialPortValueEvent { //zalety, wady, warianty, inne rozwiazania
 

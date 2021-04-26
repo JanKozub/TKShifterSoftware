@@ -1,9 +1,11 @@
-package com.jan.backend;
+package com.jan.backend.serial;
 
+import com.jan.backend.TimeWatch;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressWarnings("BusyWait")
@@ -46,8 +48,7 @@ public class SerialService {
         TimeWatch timeWatch = new TimeWatch();
         do {
             if (mode != -1) return mode;
-
-            if (timeWatch.time() > 3000) return -1;
+            if (timeWatch.time() > 6000) return -1;
 
             try {
                 Thread.sleep(10); //TODO
@@ -76,6 +77,7 @@ public class SerialService {
                 String read = readString();
                 if (read.contains("values")) {
                     data = read.split("=")[1].split(";");
+//                    if (data != null)
                     reportValue(data);
                 } else if (read.contains("mode")) {
                     if (read.contains("1"))
@@ -110,6 +112,7 @@ public class SerialService {
 
     private void reportValue(String[] data) {
         SerialPortValueEvent serialPortValueEvent = new SerialPortValueEvent(data);
+//        System.out.println(listeners);
         listeners.forEach(listener -> listener.onValueUpdate(serialPortValueEvent));
     }
 }

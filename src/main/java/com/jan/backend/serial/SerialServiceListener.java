@@ -1,4 +1,4 @@
-package com.jan.backend;
+package com.jan.backend.serial;
 
 public interface SerialServiceListener {
 
