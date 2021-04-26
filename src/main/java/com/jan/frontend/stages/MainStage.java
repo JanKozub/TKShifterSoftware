@@ -1,8 +1,8 @@
 package com.jan.frontend.stages;
 
-import com.jan.backend.ImageService;
-import com.jan.backend.SerialService;
+import com.jan.backend.*;
 import com.jan.frontend.components.alerts.ClosePortErrorAlert;
+import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.mainStage.MemoryButton;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
 import com.jan.frontend.stages.config.AdvancedConfigStage;
@@ -18,7 +18,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 
-@SuppressWarnings("BusyWait")
 public class MainStage extends Stage {
 
     private final ImageView currentGearImage;
@@ -28,6 +27,19 @@ public class MainStage extends Stage {
 
     public MainStage(SerialService serialService, int mode) {
         this.serialService = serialService;
+
+        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+            @Override
+            public void onSerialPortError(SerialPortErrorEvent event) {
+                showSerialEvent();
+            }
+
+            @Override
+            public void onValueUpdate(SerialPortValueEvent event) {
+                updateValues(event.getData());
+            }
+        };
+        serialService.addListener(serialServiceListener);
 
         Group root = new Group();
 
@@ -71,37 +83,29 @@ public class MainStage extends Stage {
         setScene(new Scene(root, 500, 475));
         setResizable(false);
 
-        Thread thread = new Thread(this::updateValues);
-        thread.start();
-
-        setOnCloseRequest(windowEvent -> onClose(serialService.getThread()));
+        setOnCloseRequest(windowEvent -> onClose(serialServiceListener));
     }
 
-    private void updateValues() {
-        try {
-            while (serialService.getSerialPort().isOpened() && !Thread.currentThread().isInterrupted()) {
-                String[] data = serialService.getData();
-                setCurrentGear(data[1]);
+    private void showSerialEvent() {
+        Platform.runLater(() -> new ReadCurrentDataErrorAlert().showAndWait());
+    }
 
-                Platform.runLater(() ->
-                        infoLabel.setText("mode= " + data[0] +
-                                ", CG=" + data[1] +
-                                ", X=" + data[2] +
-                                ", Y=" + data[3] +
-                                ", T=" + data[4] +
-                                ", offset=[" + data[5] +
-                                ", " + data[6] +
-                                ", " + data[7] +
-                                ", " + data[8] + "]" +
-                                ", UCHP=" + data[9] +
-                                ", LCHP=" + data[10]
-                        ));
+    private void updateValues(String[] data) {
+        setCurrentGear(data[1]);
 
-                Thread.sleep(10);
-            }
-        } catch (InterruptedException ignored) {
-
-        }
+        Platform.runLater(() ->
+                infoLabel.setText("mode= " + data[0] +
+                        ", CG=" + data[1] +
+                        ", X=" + data[2] +
+                        ", Y=" + data[3] +
+                        ", T=" + data[4] +
+                        ", offset=[" + data[5] +
+                        ", " + data[6] +
+                        ", " + data[7] +
+                        ", " + data[8] + "]" +
+                        ", UCHP=" + data[9] +
+                        ", LCHP=" + data[10]
+                ));
     }
 
     private void setCurrentGear(String currentGear) {
@@ -143,12 +147,12 @@ public class MainStage extends Stage {
             stage2.show();
     }
 
-    private void onClose(Thread thread) {
+    private void onClose(SerialServiceListener serialServiceListener) {
         try {
-            serialService.getSerialPort().closePort();
-            thread.interrupt();
-        } catch (SerialPortException e) {
-            new ClosePortErrorAlert();
+            serialService.removeListener(serialServiceListener);
+            serialService.onClose();
+        } catch (SerialPortException ex) {
+            new ClosePortErrorAlert().showAndWait();
         }
     }
 }

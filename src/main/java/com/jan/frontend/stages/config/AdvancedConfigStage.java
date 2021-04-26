@@ -25,7 +25,7 @@ public class AdvancedConfigStage extends Stage {
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
 
-        currentOffsetLabel = new Label("255");
+        currentOffsetLabel = new Label();
         currentOffsetLabel.setFont(Font.font(20));
         currentOffsetLabel.setLayoutX(80);
         currentOffsetLabel.setLayoutY(5);
