@@ -29,8 +29,6 @@ public class AdvancedConfigStage extends Stage {
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
 
         addrBox.setOnHidden(a -> numberField.setText(currentOffset));
-        addrBox.getItems().setAll(1, 2, 3, 4);
-        addrBox.setValue(1);
 
         SetButton setButton = new SetButton();
         setButton.setLayoutX(220);
@@ -44,16 +42,17 @@ public class AdvancedConfigStage extends Stage {
 
         BorderGroup borderGroup = new BorderGroup(serialService);
 
-        root.getChildren().addAll(offsetLabel, offsetGroup, gearInLabel, borderGroup);
+        CenteredLabel invertAxisLabel = new CenteredLabel("Invert Axis:");
+        invertAxisLabel.setLayoutY(150);
+
+        root.getChildren().addAll(offsetLabel, offsetGroup, gearInLabel, borderGroup, invertAxisLabel, new CheckBoxGroup());
         setTitle("Advanced config");
         initModality(Modality.WINDOW_MODAL);
         setResizable(false);
-
         getIcons().add(ImageService.getLogo());
-        setScene(new Scene(root, 320, 200));
+        setScene(new Scene(root, 320, 280));
 
         setOnShown(e -> numberField.setText(currentOffset));
-
         setOnShowing(e -> serialService.addListener(serialServiceListener));
         setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
     }
