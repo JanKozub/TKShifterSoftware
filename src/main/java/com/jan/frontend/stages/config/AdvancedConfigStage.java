@@ -1,7 +1,9 @@
 package com.jan.frontend.stages.config;
 
 import com.jan.backend.ImageService;
+import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
+import com.jan.backend.serial.SerialServiceListener;
 import com.jan.frontend.components.alerts.SendErrorAlert;
 import com.jan.frontend.components.config.advanced.*;
 import javafx.scene.Group;
@@ -10,29 +12,32 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 
-@SuppressWarnings("BusyWait")
 public class AdvancedConfigStage extends Stage {
-    private final SerialService serialService;
-    private final AddressBox addrBox;
-    private final NumberField numberField;
+    private final AddressBox addrBox = new AddressBox();
+    private final NumberField numberField = new NumberField();
+    private volatile String currentOffset;
 
     public AdvancedConfigStage(SerialService serialService) {
-        this.serialService = serialService;
+        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+            @Override
+            public void onValueUpdate(SerialPortValueEvent event) {
+                currentOffset = event.getData()[4 + addrBox.getValue()];
+            }
+        };
+
+        serialService.addListener(serialServiceListener);
+
         Group root = new Group();
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
 
-        addrBox = new AddressBox();
-        addrBox.setOnAction(e -> refreshOffsetLabel());
-        numberField = new NumberField();
+        addrBox.setOnHidden(a -> numberField.setText(currentOffset));
         numberField.setMaxWidth(100);
         numberField.setLayoutX(110);
 
         SetButton setButton = new SetButton();
         setButton.setLayoutX(220);
-        setButton.setOnAction(a -> onClick(addrBox.getValue(), numberField.getText()));
-
-        refreshOffsetLabel();
+        setButton.setOnAction(a -> onClick(serialService, addrBox.getValue(), numberField.getText()));
 
         Group offsetGroup = new Group(addrBox, numberField, setButton);
         offsetGroup.setLayoutY(25);
@@ -53,31 +58,21 @@ public class AdvancedConfigStage extends Stage {
         initModality(Modality.WINDOW_MODAL);
         setResizable(false);
 
-        getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        getIcons().add(ImageService.getLogo());
         setScene(new Scene(root, 320, 200));
+
+        setOnShown(e -> numberField.setText(currentOffset));
+
+        setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
     }
 
-    private void refreshOffsetLabel() {
-        numberField.setText(getCurrentOffset());
-    }
-
-    private void onClick(int addr, String value) {
+    private void onClick(SerialService serialService, int addr, String value) {
         try {
             serialService.writeString("o=" + (addr - 1) + ";" + value);
-            if (!getCurrentOffset().equals(value)) {
-                do {
-                    Thread.sleep(10);
-                } while (!getCurrentOffset().equals(value));
-                refreshOffsetLabel();
-                numberField.clear();
-            }
-        } catch (SerialPortException | InterruptedException serialPortException) {
+            numberField.clear();
+        } catch (SerialPortException ex) {
             new SendErrorAlert().showAndWait();
             this.close();
         }
-    }
-
-    private String getCurrentOffset() {
-        return serialService.getData()[4 + addrBox.getValue()];
     }
 }

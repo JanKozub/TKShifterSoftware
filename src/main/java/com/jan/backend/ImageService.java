@@ -17,4 +17,8 @@ public class ImageService {
         }
         return image;
     }
+
+    public static Image getLogo() {
+        return getImage("/icons/logo32x32.png");
+    }
 }

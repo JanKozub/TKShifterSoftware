@@ -9,6 +9,6 @@ public class UniversalErrorAlert extends Alert {
         super(AlertType.ERROR);
         setTitle("Error occurred!");
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
-        stage.getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        stage.getIcons().add(ImageService.getLogo());
     }
 }

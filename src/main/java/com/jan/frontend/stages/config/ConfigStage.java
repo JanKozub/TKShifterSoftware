@@ -34,7 +34,7 @@ public abstract class ConfigStage extends Stage {
         var scene = new Scene(root, 400, 200);
 
         setTitle("Calibration");
-        getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        getIcons().add(ImageService.getLogo());
         setScene(scene);
         setResizable(false);
         initModality(Modality.WINDOW_MODAL);

@@ -5,7 +5,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 
-import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @SuppressWarnings("BusyWait")
@@ -13,7 +12,6 @@ public class SerialService {
 
     private final SerialPort serialPort;
     private Thread thread;
-    private volatile String[] data = new String[11];
     private volatile int mode = -1;
     private final CopyOnWriteArrayList<SerialServiceListener> listeners = new CopyOnWriteArrayList<>();
 
@@ -29,26 +27,16 @@ public class SerialService {
         listeners.remove(listener);
     }
 
-    public String[] getData() {
-        return data;
-    }
-
     public int isPortValid() throws SerialPortException, SerialPortTimeoutException {
-        if (!serialPort.isOpened()) {
-            serialPort.openPort();
-            serialPort.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_ODD);
-        }
-        if (thread == null) {
-            thread = new Thread(this::getDataFromShifter);
-            thread.start();
-        }
+        if (!serialPort.isOpened()) openPort();
+        if (thread == null) runNewThread();
 
         mode = -1;
         writeString("getMode");
         TimeWatch timeWatch = new TimeWatch();
         do {
             if (mode != -1) return mode;
-            if (timeWatch.time() > 6000) return -1;
+            if (timeWatch.time() > 3000) return -1;
 
             try {
                 Thread.sleep(10); //TODO
@@ -56,6 +44,16 @@ public class SerialService {
                 return -1;
             }
         } while (true);
+    }
+
+    private void runNewThread() {
+        thread = new Thread(this::getDataFromShifter);
+        thread.start();
+    }
+
+    private void openPort() throws SerialPortException {
+        serialPort.openPort();
+        serialPort.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_ODD);
     }
 
     public synchronized void writeString(String str) throws SerialPortException {
@@ -76,9 +74,7 @@ public class SerialService {
             while (!Thread.currentThread().isInterrupted()) {
                 String read = readString();
                 if (read.contains("values")) {
-                    data = read.split("=")[1].split(";");
-//                    if (data != null)
-                    reportValue(data);
+                    reportValue(read.split("=")[1].split(";"));
                 } else if (read.contains("mode")) {
                     if (read.contains("1"))
                         mode = 1;
@@ -112,7 +108,6 @@ public class SerialService {
 
     private void reportValue(String[] data) {
         SerialPortValueEvent serialPortValueEvent = new SerialPortValueEvent(data);
-//        System.out.println(listeners);
         listeners.forEach(listener -> listener.onValueUpdate(serialPortValueEvent));
     }
 }

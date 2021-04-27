@@ -1,12 +1,13 @@
 package com.jan.frontend.stages;
 
-import com.jan.backend.*;
+import com.jan.backend.ImageService;
 import com.jan.backend.serial.SerialPortErrorEvent;
 import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
 import com.jan.frontend.components.alerts.ClosePortErrorAlert;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
+import com.jan.frontend.components.mainStage.AdvancedConfigButton;
 import com.jan.frontend.components.mainStage.MemoryButton;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
 import com.jan.frontend.stages.config.AdvancedConfigStage;
@@ -18,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 
@@ -67,11 +67,7 @@ public class MainStage extends Stage {
         configButton.setLayoutY(115);
         configButton.setOnAction(event -> onConfigButtonClick(stage1, stage2));
 
-        Button advancedConfig = new Button("Advanced Config\n(do not touch)");
-        advancedConfig.setTextAlignment(TextAlignment.CENTER);
-        advancedConfig.setMinSize(210, 75);
-        advancedConfig.setLayoutX(20);
-        advancedConfig.setLayoutY(285);
+        Button advancedConfig = new AdvancedConfigButton();
         advancedConfig.setOnAction(e -> stage3.show());
 
         infoLabel.setLayoutY(455);
@@ -81,7 +77,7 @@ public class MainStage extends Stage {
                 new MemoryButton(serialService), advancedConfig, logo, infoLabel);
 
         setTitle("TK Shifter Calibration software");
-        getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        getIcons().add(ImageService.getLogo());
         setScene(new Scene(root, 500, 475));
         setResizable(false);
 

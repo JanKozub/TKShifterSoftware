@@ -1,54 +1,51 @@
 package com.jan.frontend.components.config.advanced;
 
+import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
+import com.jan.backend.serial.SerialServiceListener;
+import com.jan.frontend.components.alerts.SendErrorAlert;
+import javafx.application.Platform;
 import javafx.scene.Group;
 import jssc.SerialPortException;
 
-@SuppressWarnings("BusyWait")
 public abstract class BorderGroup extends Group {
 
     private final NumberField numberField = new NumberField();
-    private final SerialService serialService;
-    private final String letter;
-    private int id;
+    private volatile String label;
 
     public BorderGroup(SerialService serialService, String letter) {
-        this.serialService = serialService;
-        this.letter = letter;
-
-        id = 9;
+        int id = 9;
         if (letter.equals("L"))
             id = 10;
 
-        refreshLabel();
+        int finalId = id;
+        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+            @Override
+            public void onValueUpdate(SerialPortValueEvent event) {
+                label = event.getData()[finalId];
+            }
+        };
+        serialService.addListener(serialServiceListener);
 
         numberField.setLayoutX(40);
         numberField.setMaxWidth(170);
 
         SetButton setUpper = new SetButton();
-        setUpper.setOnAction(e -> onClick());
+        setUpper.setOnAction(e -> onClick(serialService, letter));
         setUpper.setLayoutX(220);
 
         getChildren().addAll(numberField, setUpper);
+
+        Platform.runLater(() -> numberField.setText(label));
     }
 
-    public void refreshLabel() {
-        numberField.setText(letter + ":" + serialService.getData()[id]);
-    }
-
-    public void onClick() {
+    public void onClick(SerialService serialService, String letter) {
         try {
-            String text = numberField.getText();
             serialService.writeString(letter + "=" + numberField.getText());
-            do {
-                Thread.sleep(10);
-            } while (!serialService.getData()[id].equals(text));
-            refreshLabel();
-        } catch (SerialPortException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (SerialPortException e) {
+            Platform.runLater(() -> new SendErrorAlert().showAndWait());
         }
         numberField.clear();
-        refreshLabel();
     }
 
 }

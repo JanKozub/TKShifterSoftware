@@ -10,6 +10,6 @@ public class ShifterCalibratedAlert extends Alert {
         setTitle("Success!");
         setHeaderText("Your shifter is now calibrated in selected mode! All data has been saved.");
         Stage stage = (Stage) getDialogPane().getScene().getWindow();
-        stage.getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        stage.getIcons().add(ImageService.getLogo());
     }
 }

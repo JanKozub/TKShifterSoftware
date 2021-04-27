@@ -37,7 +37,7 @@ public class SelectPortStage extends Stage {
         startButton.setOnAction(e -> onStartClick(this, ports.getValue()));
 
         root.getChildren().addAll(label, ports, refreshButton, startButton);
-        getIcons().add(ImageService.getImage("/icons/logo32x32.png"));
+        getIcons().add(ImageService.getLogo());
         setTitle("Port");
         setScene(new Scene(root, 200, 80));
         setResizable(false);

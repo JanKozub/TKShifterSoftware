@@ -1,5 +1,6 @@
 package com.jan.backend.serial;
 
+
 public class SerialPortValueEvent { //zalety, wady, warianty, inne rozwiazania
 
     private final String[] data;
@@ -12,3 +13,5 @@ public class SerialPortValueEvent { //zalety, wady, warianty, inne rozwiazania
         return data;
     }
 }
+
+
