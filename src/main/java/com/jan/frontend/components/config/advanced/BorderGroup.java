@@ -8,40 +8,44 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import jssc.SerialPortException;
 
-public abstract class BorderGroup extends Group {
+public class BorderGroup extends Group {
 
     private final NumberField numberField = new NumberField();
+    private final BorderBox borderBox = new BorderBox();
     private volatile String label;
 
-    public BorderGroup(SerialService serialService, String letter) {
-        int id = 9;
-        if (letter.equals("L"))
-            id = 10;
+    public BorderGroup(SerialService serialService) {
 
-        int finalId = id;
         SerialServiceListener serialServiceListener = new SerialServiceListener() {
             @Override
             public void onValueUpdate(SerialPortValueEvent event) {
-                label = event.getData()[finalId];
+                label = event.getData()[getCurrentId()];
             }
         };
         serialService.addListener(serialServiceListener);
 
-        numberField.setLayoutX(40);
-        numberField.setMaxWidth(170);
+        borderBox.setOnHidden(a -> numberField.setText(label));
 
-        SetButton setUpper = new SetButton();
-        setUpper.setOnAction(e -> onClick(serialService, letter));
-        setUpper.setLayoutX(220);
+        SetButton setButton = new SetButton();
+        setButton.setOnAction(e -> onClick(serialService));
+        setButton.setLayoutX(220);
 
-        getChildren().addAll(numberField, setUpper);
+        getChildren().addAll(borderBox, numberField, setButton);
 
         Platform.runLater(() -> numberField.setText(label));
+        setLayoutY(100);
     }
 
-    public void onClick(SerialService serialService, String letter) {
+    private int getCurrentId() {
+        if (borderBox.getValue().equals("U"))
+            return 9;
+        else
+            return 10;
+    }
+
+    public void onClick(SerialService serialService) {
         try {
-            serialService.writeString(letter + "=" + numberField.getText());
+            serialService.writeString(borderBox.getValue() + "=" + numberField.getText());
         } catch (SerialPortException e) {
             Platform.runLater(() -> new SendErrorAlert().showAndWait());
         }

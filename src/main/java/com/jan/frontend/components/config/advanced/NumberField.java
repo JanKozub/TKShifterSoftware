@@ -10,6 +10,8 @@ public class NumberField extends TextField {
         textProperty().addListener(this::changed);
         setMinHeight(40);
         setFont(Font.font(15));
+        setMaxWidth(100);
+        setLayoutX(110);
     }
 
     private void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

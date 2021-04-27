@@ -24,20 +24,17 @@ public class AdvancedConfigStage extends Stage {
                 currentOffset = event.getData()[4 + addrBox.getValue()];
             }
         };
-
-        serialService.addListener(serialServiceListener);
-
         Group root = new Group();
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
 
         addrBox.setOnHidden(a -> numberField.setText(currentOffset));
-        numberField.setMaxWidth(100);
-        numberField.setLayoutX(110);
+        addrBox.getItems().setAll(1, 2, 3, 4);
+        addrBox.setValue(1);
 
         SetButton setButton = new SetButton();
         setButton.setLayoutX(220);
-        setButton.setOnAction(a -> onClick(serialService, addrBox.getValue(), numberField.getText()));
+        setButton.setOnAction(a -> onClick(serialService));
 
         Group offsetGroup = new Group(addrBox, numberField, setButton);
         offsetGroup.setLayoutY(25);
@@ -45,15 +42,9 @@ public class AdvancedConfigStage extends Stage {
         CenteredLabel gearInLabel = new CenteredLabel("Neutral Borders:");
         gearInLabel.setLayoutY(75);
 
-        Group upperGear = new UpperGroup(serialService, "U");
+        BorderGroup borderGroup = new BorderGroup(serialService);
 
-        Group lowerGear = new LowerGroup(serialService, "L");
-        lowerGear.setLayoutY(50);
-
-        Group gearInGroup = new Group(upperGear, lowerGear);
-        gearInGroup.setLayoutY(100);
-
-        root.getChildren().addAll(offsetLabel, offsetGroup, gearInLabel, gearInGroup);
+        root.getChildren().addAll(offsetLabel, offsetGroup, gearInLabel, borderGroup);
         setTitle("Advanced config");
         initModality(Modality.WINDOW_MODAL);
         setResizable(false);
@@ -63,12 +54,13 @@ public class AdvancedConfigStage extends Stage {
 
         setOnShown(e -> numberField.setText(currentOffset));
 
+        setOnShowing(e -> serialService.addListener(serialServiceListener));
         setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
     }
 
-    private void onClick(SerialService serialService, int addr, String value) {
+    private void onClick(SerialService serialService) {
         try {
-            serialService.writeString("o=" + (addr - 1) + ";" + value);
+            serialService.writeString("o=" + (addrBox.getValue() - 1) + ";" + numberField.getText());
             numberField.clear();
         } catch (SerialPortException ex) {
             new SendErrorAlert().showAndWait();
