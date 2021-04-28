@@ -36,11 +36,15 @@ public class SerialService {
         TimeWatch timeWatch = new TimeWatch();
         do {
             if (mode != -1) return mode;
-            if (timeWatch.time() > 3000) return -1;
+            if (timeWatch.time() > 3000) {
+                serialPort.closePort();
+                return -1;
+            }
 
             try {
                 Thread.sleep(10); //TODO
             } catch (InterruptedException e) {
+                serialPort.closePort();
                 return -1;
             }
         } while (true);
