@@ -1,6 +1,8 @@
 package com.jan.backend.serial;
 
-public interface SerialServiceListener {
+import java.util.EventListener;
+
+public interface SerialServiceListener extends EventListener {
 
     default void onSerialPortError(SerialPortErrorEvent event) {}
 

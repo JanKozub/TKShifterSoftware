@@ -1,19 +1,28 @@
 package com.jan.backend;
 
 public class TimeWatch {
-    long starts;
+    private long starts;
+    private final long timeout;
 
-    public TimeWatch() {
+    public TimeWatch(long timeout) {
         reset();
+        this.timeout = timeout;
     }
 
-    public TimeWatch reset() {
+    public void reset() {
         starts = System.currentTimeMillis();
-        return this;
     }
 
     public long time() {
         long ends = System.currentTimeMillis();
         return ends - starts;
+    }
+
+    public boolean isTimedOut(){
+        return time() > timeout;
+    }
+
+    public long getTimeLeft() {
+        return Math.max(timeout - time(), 1);
     }
 }

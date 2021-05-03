@@ -12,14 +12,18 @@ public class BorderGroup extends Group {
 
     private final NumberField numberField = new NumberField();
     private final BorderBox borderBox = new BorderBox();
-    private volatile String label;
+    private volatile String label = "";
 
     public BorderGroup(SerialService serialService) {
 
         SerialServiceListener serialServiceListener = new SerialServiceListener() {
             @Override
             public void onValueUpdate(SerialPortValueEvent event) {
-                label = event.getData()[getCurrentId()];
+                if (borderBox.getValue().equals("U")) {
+                    label = event.getUCHP();
+                } else {
+                    label = event.getLCHP();
+                }
             }
         };
         serialService.addListener(serialServiceListener);
@@ -34,13 +38,6 @@ public class BorderGroup extends Group {
 
         Platform.runLater(() -> numberField.setText(label));
         setLayoutY(100);
-    }
-
-    private int getCurrentId() {
-        if (borderBox.getValue().equals("U"))
-            return 9;
-        else
-            return 10;
     }
 
     public void onClick(SerialService serialService) {

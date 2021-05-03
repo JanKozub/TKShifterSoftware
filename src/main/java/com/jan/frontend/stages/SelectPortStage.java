@@ -14,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
-import jssc.SerialPortTimeoutException;
 
 public class SelectPortStage extends Stage {
     private final ComboBox<String> ports = new ComboBox<>();
@@ -55,7 +54,7 @@ public class SelectPortStage extends Stage {
                 } else {
                     new WrongPortError().showAndWait();
                 }
-            } catch (SerialPortException | SerialPortTimeoutException se) {
+            } catch (SerialPortException se) {
                 new OpenPortErrorAlert().showAndWait();
             }
         }

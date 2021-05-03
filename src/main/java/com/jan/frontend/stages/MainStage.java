@@ -40,7 +40,7 @@ public class MainStage extends Stage {
 
             @Override
             public void onValueUpdate(SerialPortValueEvent event) {
-                updateValues(event.getData());
+                updateValues(event);
             }
         };
         serialService.addListener(serialServiceListener);
@@ -88,22 +88,9 @@ public class MainStage extends Stage {
         Platform.runLater(() -> new ReadCurrentDataErrorAlert().showAndWait());
     }
 
-    private void updateValues(String[] data) {
-        setCurrentGear(data[1]);
-
-        Platform.runLater(() ->
-                infoLabel.setText("mode= " + data[0] +
-                        ", CG=" + data[1] +
-                        ", X=" + data[2] +
-                        ", Y=" + data[3] +
-                        ", T=" + data[4] +
-                        ", offset=[" + data[5] +
-                        ", " + data[6] +
-                        ", " + data[7] +
-                        ", " + data[8] + "]" +
-                        ", UCHP=" + data[9] +
-                        ", LCHP=" + data[10]
-                ));
+    private void updateValues(SerialPortValueEvent event) {
+        setCurrentGear(event.getCurrentGear());
+        Platform.runLater(() -> infoLabel.setText(event.getMessage()));
     }
 
     private void setCurrentGear(String currentGear) {

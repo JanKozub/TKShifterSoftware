@@ -16,24 +16,22 @@ import jssc.SerialPortException;
 public class AdvancedConfigStage extends Stage {
     private final AddressBox addrBox = new AddressBox();
     private final NumberField numberField = new NumberField();
-    private volatile String currentOffset;
     private final InvCheckBox invX = new InvCheckBox("X Inverted", 10);
     private final InvCheckBox invY = new InvCheckBox("Y Inverted", 40);
     private final InvCheckBox invT = new InvCheckBox("T Inverted", 70);
+    private volatile String lastOffset = "";
 
     public AdvancedConfigStage(SerialService serialService) {
         SerialServiceListener serialServiceListener = new SerialServiceListener() {
             @Override
             public void onValueUpdate(SerialPortValueEvent event) {
-                currentOffset = event.getData()[4 + addrBox.getValue()];
-                setStates(event.getData()[11], event.getData()[12], event.getData()[13]);
+                updateOffset(event.getCurrentOffset(addrBox.getValue()));
+                setStates(event.isXInverted(), event.isYInverted(), event.isTInverted());
             }
         };
         Group root = new Group();
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
-
-        addrBox.setOnHidden(a -> numberField.setText(currentOffset));
 
         SetButton setButton = new SetButton();
         setButton.setLayoutX(220);
@@ -64,7 +62,6 @@ public class AdvancedConfigStage extends Stage {
         getIcons().add(ImageService.getLogo());
         setScene(new Scene(root, 320, 280));
 
-        setOnShown(e -> numberField.setText(currentOffset));
         setOnShowing(e -> serialService.addListener(serialServiceListener));
         setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
     }
@@ -87,9 +84,16 @@ public class AdvancedConfigStage extends Stage {
         }
     }
 
-    private void setStates(String x, String y, String t) {
-        invX.setSelected(x.equals("1"));
-        invY.setSelected(y.equals("1"));
-        invT.setSelected(t.equals("1"));
+    private void setStates(boolean x, boolean y, boolean t) {
+        invX.setSelected(x);
+        invY.setSelected(y);
+        invT.setSelected(t);
+    }
+
+    private void updateOffset(String currentOffset) {
+        if (!currentOffset.equals(lastOffset)) {
+            Platform.runLater(() -> numberField.setText(currentOffset));
+            lastOffset = currentOffset;
+        }
     }
 }

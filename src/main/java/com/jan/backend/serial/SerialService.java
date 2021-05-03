@@ -7,15 +7,15 @@ import jssc.SerialPortTimeoutException;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@SuppressWarnings("BusyWait")
 public class SerialService {
 
     private final SerialPort serialPort;
     private Thread thread;
     private volatile int mode = -1;
     private final CopyOnWriteArrayList<SerialServiceListener> listeners = new CopyOnWriteArrayList<>();
+    private final Object lock = new Object();
 
-    public SerialService(String port) throws SerialPortException {
+    public SerialService(String port) {
         serialPort = new SerialPort(port);
     }
 
@@ -27,23 +27,25 @@ public class SerialService {
         listeners.remove(listener);
     }
 
-    public int isPortValid() throws SerialPortException, SerialPortTimeoutException {
+    public int isPortValid() throws SerialPortException {
         if (!serialPort.isOpened()) openPort();
         if (thread == null) runNewThread();
 
         mode = -1;
         writeString("getMode");
-        TimeWatch timeWatch = new TimeWatch();
+        TimeWatch timeWatch = new TimeWatch(3000);
         do {
-            if (mode != -1) return mode;
-            if (timeWatch.time() > 3000) {
-                serialPort.closePort();
-                return -1;
+            synchronized (lock) {
+                try {
+                    if (mode != -1) return mode;
+                    lock.wait(timeWatch.getTimeLeft());
+                } catch (InterruptedException e) {
+                    serialPort.closePort();
+                    return -1;
+                }
             }
 
-            try {
-                Thread.sleep(10); //TODO
-            } catch (InterruptedException e) {
+            if (timeWatch.isTimedOut()) {
                 serialPort.closePort();
                 return -1;
             }
@@ -64,12 +66,17 @@ public class SerialService {
         serialPort.writeString(str);
     }
 
-    private String readString() throws SerialPortTimeoutException, SerialPortException {
+    @SuppressWarnings("BusyWait")
+    private String readString() throws SerialPortTimeoutException, SerialPortException, InterruptedException {
         StringBuilder read = new StringBuilder();
         while (!read.toString().contains("\n")) {
-            read.append(serialPort.readString(1, 6000));
+            String str = serialPort.readString(1, 6000);
+            if (str.isEmpty())
+                Thread.sleep(10);
+            else {
+                read.append(str);
+            }
         }
-
         return read.toString().trim();
     }
 
@@ -80,13 +87,16 @@ public class SerialService {
                 if (read.contains("values")) {
                     reportValue(read.split("=")[1].split(";"));
                 } else if (read.contains("mode")) {
-                    if (read.contains("1"))
-                        mode = 1;
-                    else if (read.contains("2"))
-                        mode = 2;
-                    else mode = -1;
+                    synchronized (lock) {
+                        if (read.contains("1"))
+                            mode = 1;
+                        else if (read.contains("2"))
+                            mode = 2;
+                        else mode = -1;
+                        lock.notifyAll();
+                    }
                 }
-                Thread.sleep(10);
+
             }
         } catch (SerialPortException | SerialPortTimeoutException serialPortException) {
             reportError(serialPortException);
