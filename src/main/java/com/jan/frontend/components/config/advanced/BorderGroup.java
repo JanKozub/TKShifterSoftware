@@ -12,23 +12,19 @@ public class BorderGroup extends Group {
 
     private final NumberField numberField = new NumberField();
     private final BorderBox borderBox = new BorderBox();
-    private volatile String label = "";
+    private volatile String lastLabel = "var";
 
     public BorderGroup(SerialService serialService) {
 
         SerialServiceListener serialServiceListener = new SerialServiceListener() {
             @Override
             public void onValueUpdate(SerialPortValueEvent event) {
-                if (borderBox.getValue().equals("U")) {
-                    label = event.getUCHP();
-                } else {
-                    label = event.getLCHP();
-                }
+                updateLabel(event);
             }
         };
         serialService.addListener(serialServiceListener);
 
-        borderBox.setOnHidden(a -> numberField.setText(label));
+        borderBox.setOnAction(a -> lastLabel = "");
 
         SetButton setButton = new SetButton();
         setButton.setOnAction(e -> onClick(serialService));
@@ -36,11 +32,10 @@ public class BorderGroup extends Group {
 
         getChildren().addAll(borderBox, numberField, setButton);
 
-        Platform.runLater(() -> numberField.setText(label));
         setLayoutY(100);
     }
 
-    public void onClick(SerialService serialService) {
+    private void onClick(SerialService serialService) {
         try {
             serialService.writeString(borderBox.getValue() + "=" + numberField.getText());
         } catch (SerialPortException e) {
@@ -49,4 +44,11 @@ public class BorderGroup extends Group {
         numberField.clear();
     }
 
+    private void updateLabel(SerialPortValueEvent event) {
+        String label = borderBox.getValue().equals("U") ? event.getUCHP() : event.getLCHP();
+        if (!lastLabel.equals(label)) {
+            Platform.runLater(() -> numberField.setText(label));
+            lastLabel = label;
+        }
+    }
 }
