@@ -96,15 +96,20 @@ public class MainStage extends Stage {
     private void setCurrentGear(String currentGear) {
         String imgUrl = null;
         if (isReadValid(currentGear)) {
-            if (isInHShifterMode())
-                if (currentGear.equals("0"))
+            if (isInHShifterMode()) {
+                if (currentGear.equals("0")) {
                     imgUrl = "/config/N.png";
-                else
+                } else {
                     imgUrl = "/config/" + currentGear + ".png";
-            else if (currentGear.equals("0"))
+                }
+            } else if (currentGear.equals("0")) {
                 imgUrl = "/config/=.png";
-            else
-                imgUrl = "/config/" + currentGear + ".png";
+            } else {
+                if (currentGear.equals("9"))
+                    imgUrl = "/config/+.png";
+                else
+                    imgUrl = "/config/-.png";
+            }
         }
 
         if (imgUrl != null) {
@@ -118,7 +123,7 @@ public class MainStage extends Stage {
     }
 
     private boolean isReadValid(String read) {
-        return !read.equals("") && read.length() == 1;
+        return !read.equals("") && read.length() <= 2;
     }
 
     private boolean isInHShifterMode() {
