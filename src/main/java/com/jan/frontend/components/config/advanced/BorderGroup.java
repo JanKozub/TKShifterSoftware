@@ -32,7 +32,7 @@ public class BorderGroup extends Group {
 
         getChildren().addAll(borderBox, numberField, setButton);
 
-        setLayoutY(100);
+        setLayoutY(155);
     }
 
     private void onClick(SerialService serialService) {
