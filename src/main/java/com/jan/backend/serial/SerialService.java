@@ -1,6 +1,8 @@
 package com.jan.backend.serial;
 
 import com.jan.backend.TimeWatch;
+import com.jan.frontend.components.alerts.ClosePortErrorAlert;
+import javafx.application.Platform;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
@@ -105,13 +107,16 @@ public class SerialService {
         }
     }
 
-    public void onClose() throws SerialPortException {
+    public void onClose(SerialServiceListener serialServiceListener) {
         try {
+            removeListener(serialServiceListener);
             thread.interrupt();
             thread.join(100);
             serialPort.closePort();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
+        } catch (SerialPortException ex2) {
+            Platform.runLater(() -> new ClosePortErrorAlert().showAndWait());
         }
     }
 

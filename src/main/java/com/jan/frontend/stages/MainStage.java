@@ -5,7 +5,6 @@ import com.jan.backend.serial.SerialPortErrorEvent;
 import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
-import com.jan.frontend.components.alerts.ClosePortErrorAlert;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.mainStage.AdvancedConfigButton;
 import com.jan.frontend.components.mainStage.MemoryButton;
@@ -20,7 +19,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import jssc.SerialPortException;
 
 public class MainStage extends Stage {
 
@@ -28,6 +26,7 @@ public class MainStage extends Stage {
     private final Button configButton = new Button();
     private final Label infoLabel = new Label();
     private final SerialService serialService;
+    private final SerialServiceListener serialServiceListener;
 
     public MainStage(SerialService serialService, int mode) {
         this.serialService = serialService;
@@ -44,6 +43,7 @@ public class MainStage extends Stage {
             }
         };
         serialService.addListener(serialServiceListener);
+        this.serialServiceListener = serialServiceListener;
 
         Group root = new Group();
 
@@ -81,11 +81,11 @@ public class MainStage extends Stage {
         setScene(new Scene(root, 500, 475));
         setResizable(false);
 
-        setOnCloseRequest(windowEvent -> onClose(serialServiceListener));
+        setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
     }
 
     private void showSerialEvent() {
-        Platform.runLater(() -> new ReadCurrentDataErrorAlert().showAndWait());
+        Platform.runLater(() -> new ReadCurrentDataErrorAlert(serialService, serialServiceListener, this).showAndWait());
     }
 
     private void updateValues(SerialPortValueEvent event) {
@@ -135,14 +135,5 @@ public class MainStage extends Stage {
             stage1.show();
         } else
             stage2.show();
-    }
-
-    private void onClose(SerialServiceListener serialServiceListener) {
-        try {
-            serialService.removeListener(serialServiceListener);
-            serialService.onClose();
-        } catch (SerialPortException ex) {
-            new ClosePortErrorAlert().showAndWait();
-        }
     }
 }
