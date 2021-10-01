@@ -10,7 +10,38 @@
     -fx-cursor: hand;
 }
 
+.main-button {
+    -fx-min-width: 180;
+    -fx-min-height: 50;
+    -fx-translate-y: 95;
+}
+
+.default-button {
+    -fx-translate-y: 155;
+}
+
 .main-pane {
     -fx-background-color: white;
+}
+
+.center-rect {
+    -fx-arc-height: 20;
+    -fx-arc-width: 20;
+}
+
+.text-field {
+    -fx-min-width: 180;
+    -fx-min-height: 50;
+    -fx-font: 16px "Verdana";
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
     -fx-border-color: black;
+}
+
+.text-field:focused {
+
+}
+
+.logo {
+
 }

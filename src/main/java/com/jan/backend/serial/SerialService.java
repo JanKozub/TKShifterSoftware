@@ -29,7 +29,7 @@ public class SerialService {
         listeners.remove(listener);
     }
 
-    public int isPortValid() throws SerialPortException {
+    public boolean isPortValid() throws SerialPortException {
         if (!serialPort.isOpened()) openPort();
         if (thread == null) runNewThread();
 
@@ -39,17 +39,17 @@ public class SerialService {
         do {
             synchronized (lock) {
                 try {
-                    if (mode != -1) return mode;
+                    if (mode != -1) return true;
                     lock.wait(timeWatch.getTimeLeft());
                 } catch (InterruptedException e) {
                     serialPort.closePort();
-                    return -1;
+                    return false;
                 }
             }
 
             if (timeWatch.isTimedOut()) {
                 serialPort.closePort();
-                return -1;
+                return false;
             }
         } while (true);
     }

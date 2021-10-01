@@ -7,7 +7,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="TK-Shifter-Software-Project" />
-        <module name="TKShifterSoftware" />
       </profile>
     </annotationProcessing>
   </component>

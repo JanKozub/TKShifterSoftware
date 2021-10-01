@@ -46,10 +46,9 @@ public class SelectPortStage extends Stage {
         if (port != null) {
             try {
                 SerialService serialService = new SerialService(port);
-                int mode = serialService.isPortValid();
 
-                if (mode > 0) {
-                    new MainStage(serialService, mode).show();
+                if (serialService.isPortValid()) {
+                    new MainStage(serialService).show();
                     stage.hide();
                 } else {
                     new WrongPortError().showAndWait();

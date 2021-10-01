@@ -13,8 +13,8 @@ public class SerialPortValueEvent {
         return data[1];
     }
 
-    public String getMode() {
-        return data[0];
+    public int getMode() {
+        return Integer.parseInt(data[0]);
     }
 
     public String getX() {

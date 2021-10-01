@@ -15,7 +15,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage = new MainStage(null, 0);
+        stage = new SelectPortStage();
         stage.show();
     }
 }
