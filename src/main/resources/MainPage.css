@@ -1,0 +1,16 @@
+.button {
+    -fx-font: 16px "Verdana";
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-border-color: black;
+}
+
+.button:hover {
+    -fx-background-color: #efefef;
+    -fx-cursor: hand;
+}
+
+.main-pane {
+    -fx-background-color: white;
+    -fx-border-color: black;
+}

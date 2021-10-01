@@ -16,13 +16,13 @@ public class BorderGroup extends Group {
 
     public BorderGroup(SerialService serialService) {
 
-        SerialServiceListener serialServiceListener = new SerialServiceListener() {
-            @Override
-            public void onValueUpdate(SerialPortValueEvent event) {
-                updateLabel(event);
-            }
-        };
-        serialService.addListener(serialServiceListener);
+//        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+//            @Override
+//            public void onValueUpdate(SerialPortValueEvent event) {
+//                updateLabel(event);
+//            }
+//        };
+//        serialService.addListener(serialServiceListener);
 
         borderBox.setOnAction(a -> lastLabel = "");
 

@@ -26,14 +26,14 @@ public class AdvancedConfigStage extends Stage {
 
     public AdvancedConfigStage(SerialService serialService) {
         this.serialService = serialService;
-        SerialServiceListener serialServiceListener = new SerialServiceListener() {
-            @Override
-            public void onValueUpdate(SerialPortValueEvent event) {
-                data = event;
-                updateOffset(event.getCurrentOffset(addrBox.getValue()));
-                setStates(event.isXInverted(), event.isYInverted(), event.isTInverted());
-            }
-        };
+//        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+//            @Override
+//            public void onValueUpdate(SerialPortValueEvent event) {
+//                data = event;
+//                updateOffset(event.getCurrentOffset(addrBox.getValue()));
+//                setStates(event.isXInverted(), event.isYInverted(), event.isTInverted());
+//            }
+//        };
         Group root = new Group();
 
         CenteredLabel offsetLabel = new CenteredLabel("Offset:");
@@ -73,8 +73,8 @@ public class AdvancedConfigStage extends Stage {
         getIcons().add(ImageService.getLogo());
         setScene(new Scene(root, 320, 330));
 
-        setOnShowing(e -> serialService.addListener(serialServiceListener));
-        setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
+//        setOnShowing(e -> serialService.addListener(serialServiceListener));
+//        setOnCloseRequest(e -> serialService.removeListener(serialServiceListener));
     }
 
     private void onSetDefaultClick() {

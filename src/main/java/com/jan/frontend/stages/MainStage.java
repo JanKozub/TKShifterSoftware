@@ -18,6 +18,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class MainStage extends Stage {
@@ -25,25 +28,25 @@ public class MainStage extends Stage {
     private final ImageView currentGearImage;
     private final Button configButton = new Button();
     private final Label infoLabel = new Label();
-    private final SerialService serialService;
-    private final SerialServiceListener serialServiceListener;
+//    private final SerialService serialService;
+//    private final SerialServiceListener serialServiceListener;
 
     public MainStage(SerialService serialService, int mode) {
-        this.serialService = serialService;
-
-        SerialServiceListener serialServiceListener = new SerialServiceListener() {
-            @Override
-            public void onSerialPortError(SerialPortErrorEvent event) {
-                showSerialEvent();
-            }
-
-            @Override
-            public void onValueUpdate(SerialPortValueEvent event) {
-                updateValues(event);
-            }
-        };
-        serialService.addListener(serialServiceListener);
-        this.serialServiceListener = serialServiceListener;
+//        this.serialService = serialService;
+//
+//        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+//            @Override
+//            public void onSerialPortError(SerialPortErrorEvent event) {
+//                showSerialEvent();
+//            }
+//
+//            @Override
+//            public void onValueUpdate(SerialPortValueEvent event) {
+//                updateValues(event);
+//            }
+//        };
+//        serialService.addListener(serialServiceListener);
+//        this.serialServiceListener = serialServiceListener;
 
         Group root = new Group();
 
@@ -67,25 +70,33 @@ public class MainStage extends Stage {
         configButton.setLayoutY(115);
         configButton.setOnAction(event -> onConfigButtonClick(stage1, stage2));
 
-        Button advancedConfig = new AdvancedConfigButton();
-        advancedConfig.setOnAction(e -> stage3.show());
-
         infoLabel.setLayoutY(455);
         infoLabel.setLayoutX(25);
 
-        root.getChildren().addAll(new MyRadioGroup(serialService, configButton, mode), currentGearImage, configButton,
-                new MemoryButton(serialService), advancedConfig, logo, infoLabel);
+//        root.getChildren().addAll(new MyRadioGroup(serialService, configButton, mode), currentGearImage, configButton,
+//                new MemoryButton(serialService), logo, infoLabel);
+
+        BorderPane pane = new BorderPane();
+        Group left = new Group(new MyRadioGroup(serialService, configButton, mode), configButton);
+        left.setLayoutX(20);
+        left.setLayoutY(20);
+        pane.setLeft(left);
+        pane.setCenter(currentGearImage);
+        pane.setRight(new Rectangle(180, 475, Paint.valueOf("red")));
+        pane.getStyleClass().add("main-pane");
 
         setTitle("TK Shifter Calibration software");
         getIcons().add(ImageService.getLogo());
-        setScene(new Scene(root, 500, 475));
+        Scene scene = new Scene(pane, 800, 475);
+        scene.getStylesheets().add("/MainPage.css");
+        setScene(scene);
         setResizable(false);
 
-        setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
+//        setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
     }
 
     private void showSerialEvent() {
-        Platform.runLater(() -> new ReadCurrentDataErrorAlert(serialService, serialServiceListener, this).showAndWait());
+//        Platform.runLater(() -> new ReadCurrentDataErrorAlert(serialService, serialServiceListener, this).showAndWait());
     }
 
     private void updateValues(SerialPortValueEvent event) {
