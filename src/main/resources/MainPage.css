@@ -38,10 +38,21 @@
     -fx-border-color: black;
 }
 
-.text-field:focused {
-
+.logo {
+    -fx-translate-y: 313;
+    -fx-translate-x: 40;
 }
 
-.logo {
+.flags-group {
+    -fx-arc-height: 25px;
+    -fx-arc-width: 25px;
+    -fx-min-width: 180px;
+    -fx-min-height: 68px;
+}
 
+.flag {
+    -fx-cursor: hand;
+}
+.flag:hover {
+    -fx-opacity: 50%;
 }

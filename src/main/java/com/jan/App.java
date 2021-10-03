@@ -1,6 +1,5 @@
 package com.jan;
 
-import com.jan.frontend.stages.MainStage;
 import com.jan.frontend.stages.SelectPortStage;
 import javafx.application.Application;
 import javafx.stage.Stage;

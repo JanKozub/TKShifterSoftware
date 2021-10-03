@@ -5,6 +5,7 @@ import com.jan.backend.serial.SerialPortErrorEvent;
 import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
+import com.jan.frontend.components.FlagsGroup;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
 import com.jan.frontend.stages.config.HConfigStage;
@@ -63,11 +64,11 @@ public class MainStage extends Stage {
 
         BorderPane pane = new BorderPane();
 
-        Group left = new Group(new MyRadioGroup(serialService, mode), configButton, restoreDefaultButton);
+        Group left = new Group(new MyRadioGroup(serialService, mode), configButton, restoreDefaultButton, new FlagsGroup(), logo);
         pane.setPadding(new Insets(15));
         pane.setLeft(left);
 
-        Rectangle center = new Rectangle(350, 350, Paint.valueOf("#a6a6a6"));
+        Rectangle center = new Rectangle(350, 350, Paint.valueOf("#111C29"));
         center.getStyleClass().add("center-rect");
         pane.setCenter(center);
 
