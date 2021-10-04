@@ -23,9 +23,9 @@ public class MyRadioGroup extends Group {
         RadioButton rb2 = new MyRadioButton("Sequential", toggleGroup, 60);
 
         if (mode == 1)
-            rb1.setSelected(true);
-        else
             rb2.setSelected(true);
+        else
+            rb1.setSelected(true);
 
         rb1.setOnAction(event -> onRb1Select());
         rb2.setOnAction(event -> onRb2Select());

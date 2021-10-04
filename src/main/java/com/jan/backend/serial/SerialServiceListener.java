@@ -6,5 +6,5 @@ public interface SerialServiceListener extends EventListener {
 
     default void onSerialPortError(SerialPortErrorEvent event) {}
 
-    default void onValueUpdate(SerialPortValueEvent event) {}
+    default void onValueUpdate(SerialData data) {}
 }

@@ -1,11 +1,14 @@
 package com.jan.backend.serial;
 
+public class SerialData {
 
-public class SerialPortValueEvent {
+    private String[] data;
 
-    private final String[] data;
+    public SerialData(String[] data) {
+        this.data = data;
+    }
 
-    public SerialPortValueEvent(String[] data) {
+    public void updateData(String[] data) {
         this.data = data;
     }
 
@@ -67,5 +70,3 @@ public class SerialPortValueEvent {
                 ", LCHP=" + getLCHP();
     }
 }
-
-

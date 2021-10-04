@@ -16,6 +16,7 @@ public class SerialService {
     private volatile int mode = -1;
     private final CopyOnWriteArrayList<SerialServiceListener> listeners = new CopyOnWriteArrayList<>();
     private final Object lock = new Object();
+    private final SerialData serialData = new SerialData(null);
 
     public SerialService(String port) {
         serialPort = new SerialPort(port);
@@ -120,13 +121,17 @@ public class SerialService {
         }
     }
 
+    public SerialData getSerialData() {
+        return serialData;
+    }
+
     private void reportError(Exception exception) {
         SerialPortErrorEvent errorEvent = new SerialPortErrorEvent(exception);
         listeners.forEach(listener -> listener.onSerialPortError(errorEvent));
     }
 
     private void reportValue(String[] data) {
-        SerialPortValueEvent serialPortValueEvent = new SerialPortValueEvent(data);
-        listeners.forEach(listener -> listener.onValueUpdate(serialPortValueEvent));
+        serialData.updateData(data);
+        listeners.forEach(listener -> listener.onValueUpdate(serialData));
     }
 }

@@ -1,24 +1,22 @@
 package com.jan.frontend.stages;
 
 import com.jan.backend.ImageService;
+import com.jan.backend.serial.SerialData;
 import com.jan.backend.serial.SerialPortErrorEvent;
-import com.jan.backend.serial.SerialPortValueEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
+import com.jan.frontend.components.bordersConfig.BordersConfig;
 import com.jan.frontend.components.FlagsGroup;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
 import com.jan.frontend.stages.config.HConfigStage;
 import com.jan.frontend.stages.config.SeqConfigStage;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -40,8 +38,8 @@ public class MainStage extends Stage {
             }
 
             @Override
-            public void onValueUpdate(SerialPortValueEvent event) {
-                updateValues(event);
+            public void onValueUpdate(SerialData data) {
+                updateValues(data);
             }
         };
         serialService.addListener(serialServiceListener);
@@ -62,41 +60,36 @@ public class MainStage extends Stage {
         Button restoreDefaultButton = new Button("Restore Default");
         restoreDefaultButton.getStyleClass().addAll("main-button", "default-button");
 
-        BorderPane pane = new BorderPane();
-
         Group left = new Group(new MyRadioGroup(serialService, mode), configButton, restoreDefaultButton, new FlagsGroup(), logo);
-        pane.setPadding(new Insets(15));
-        pane.setLeft(left);
+        left.setLayoutX(15);
 
         Rectangle center = new Rectangle(350, 350, Paint.valueOf("#111C29"));
         center.getStyleClass().add("center-rect");
-        pane.setCenter(center);
 
-        TextField textField = new TextField();
-        textField.getStyleClass().setAll("text-field");
-        Group right = new Group(textField);
-        pane.setRight(right);
+        Group right = new Group(new BordersConfig(serialService));
+        right.setLayoutX(605);
 
-        pane.setBottom(infoLabel);
-        pane.getStyleClass().add("main-pane");
+        infoLabel.getStyleClass().add("info-label");
 
         setTitle("TK Shifter Calibration software");
         getIcons().add(ImageService.getLogo());
-        Scene scene = new Scene(pane, 800, 475);
+        Group layout = new Group(left, center, right, infoLabel);
+        layout.setLayoutY(15);
+        Scene scene = new Scene(layout, 800, 426);
         scene.getStylesheets().add("/MainPage.css");
         setScene(scene);
         setResizable(false);
 
-//        setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
+        setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
     }
 
     private void showSerialEvent() {
         Platform.runLater(() -> new ReadCurrentDataErrorAlert(serialService, serialServiceListener, this).showAndWait());
     }
 
-    private void updateValues(SerialPortValueEvent event) {
-        mode = event.getMode();
-        Platform.runLater(() -> infoLabel.setText(event.getMessage()));
+    private void updateValues(SerialData data) {
+        mode = data.getMode();
+        Platform.runLater(() -> infoLabel.setText(data.getMessage()));
     }
 
     private void onConfigButtonClick(Stage stage1, Stage stage2) {
