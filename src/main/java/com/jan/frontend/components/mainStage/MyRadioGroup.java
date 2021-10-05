@@ -23,7 +23,7 @@ public class MyRadioGroup extends Group {
         RadioButton rb2 = new MyRadioButton("Sequential", toggleGroup, 60);
 
         if (mode == 1)
-            rb2.setSelected(true);
+             rb2.setSelected(true);
         else
             rb1.setSelected(true);
 
