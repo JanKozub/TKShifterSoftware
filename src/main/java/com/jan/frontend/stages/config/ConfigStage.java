@@ -1,42 +1,38 @@
 package com.jan.frontend.stages.config;
 
+import com.jan.backend.ImageService;
 import com.jan.backend.serial.SerialService;
+import com.jan.frontend.components.main.MyScene;
+import com.jan.frontend.components.main.MyStage;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
-import com.jan.backend.ImageService;
-import com.jan.frontend.components.config.ConfigLabel;
-import com.jan.frontend.components.config.NextButton;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class ConfigStage extends Stage {
+public abstract class ConfigStage extends MyStage {
 
     private final AtomicInteger gear = new AtomicInteger(-2);
 
     public ConfigStage(SerialService serialService, String initialUrl) {
+        super("Calibration");
         Group root = new Group();
 
-        Label label = new ConfigLabel("Hold lever in position\nshown in the picture\nand click next");
+        Label label = new Label("Hold lever in position\nshown in the picture\nand click next");
+        label.getStyleClass().add("config-label");
 
         ImageView imageView = new ImageView(ImageService.getImage(initialUrl));
         imageView.setLayoutX(200);
 
-        Button nextButton = new NextButton();
+        Button nextButton = new Button("Next");
+        nextButton.getStyleClass().add("next-button");
         nextButton.setOnAction(e -> onClick(serialService, gear, imageView));
 
         root.getChildren().addAll(label, nextButton, imageView);
 
-        var scene = new Scene(root, 400, 200);
-
-        setTitle("Calibration");
-        getIcons().add(ImageService.getLogo());
-        setScene(scene);
-        setResizable(false);
+        setScene(new MyScene(root, 400, 200, "/ConfigStage.css"));
         initModality(Modality.WINDOW_MODAL);
 
         setOnCloseRequest(windowEvent -> {

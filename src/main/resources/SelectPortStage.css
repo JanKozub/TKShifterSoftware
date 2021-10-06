@@ -1,0 +1,20 @@
+.start-button {
+    -fx-min-width: 150px;
+    -fx-min-height: 20px;
+    -fx-translate-x: 25;
+    -fx-translate-y: 50;
+    -fx-alignment: center;
+}
+
+.ports-list {
+    -fx-min-width: 110px;
+    -fx-min-height: 28px;
+    -fx-translate-x: 25px;
+    -fx-translate-y: 20;
+}
+
+.refresh-button {
+-fx-min-width: 25px;
+    -fx-translate-x: 139px;
+    -fx-translate-y: 20px;
+}

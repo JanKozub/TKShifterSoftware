@@ -5,7 +5,9 @@ import com.jan.backend.serial.SerialData;
 import com.jan.backend.serial.SerialPortErrorEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
-import com.jan.frontend.components.FlagsGroup;
+import com.jan.frontend.components.main.MyStage;
+import com.jan.frontend.components.mainStage.FlagsGroup;
+import com.jan.frontend.components.main.MyScene;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
 import com.jan.frontend.components.bordersConfig.BordersConfig;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
@@ -13,7 +15,6 @@ import com.jan.frontend.stages.config.HConfigStage;
 import com.jan.frontend.stages.config.SeqConfigStage;
 import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -21,13 +22,14 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class MainStage extends Stage {
+public class MainStage extends MyStage {
 
     private final Label infoLabel = new Label();
     private final SerialService serialService;
     private int mode;
 
     public MainStage(SerialService serialService) {
+        super("TK Shifter Calibration software");
         this.serialService = serialService;
 
         initSerialCom(this);
@@ -58,14 +60,9 @@ public class MainStage extends Stage {
 
         infoLabel.getStyleClass().add("info-label");
 
-        setTitle("TK Shifter Calibration software");
-        getIcons().add(ImageService.getLogo());
         Group layout = new Group(left, center, right, infoLabel);
         layout.setLayoutY(15);
-        Scene scene = new Scene(layout, 800, 426);
-        scene.getStylesheets().add("/MainPage.css");
-        setScene(scene);
-        setResizable(false);
+        setScene(new MyScene(layout, 800, 426, "/MainStage.css"));
     }
 
     private void initSerialCom(Stage stage) {

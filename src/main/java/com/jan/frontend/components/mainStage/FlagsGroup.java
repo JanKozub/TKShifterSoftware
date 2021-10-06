@@ -1,9 +1,8 @@
-package com.jan.frontend.components;
+package com.jan.frontend.components.mainStage;
 
-import com.jan.backend.ImageService;
 import com.jan.backend.I18N;
+import com.jan.backend.ImageService;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;

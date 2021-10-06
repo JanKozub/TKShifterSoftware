@@ -1,6 +1,5 @@
 package com.jan;
 
-import com.jan.frontend.stages.MainStage;
 import com.jan.frontend.stages.SelectPortStage;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -15,7 +14,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage = new MainStage(null);
+        stage = new SelectPortStage();
         stage.show();
     }
 }

@@ -1,0 +1,22 @@
+.button {
+    -fx-font: 16px "Verdana";
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-border-color: black;
+}
+.next-button {
+    -fx-min-width: 200px;
+    -fx-min-height: 60px;
+    -fx-translate-x: 10px;
+    -fx-translate-y: 130px;
+}
+
+.config-label {
+    -fx-font-size: 20px;
+    -fx-min-width: 200px;
+    -fx-min-height: 50px;
+    -fx-translate-x: 10px;
+    -fx-translate-y: 35px;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
