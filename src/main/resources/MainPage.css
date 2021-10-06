@@ -92,25 +92,17 @@
 }
 
 .border-field {
-    -fx-max-width: 65px;
-    -fx-min-height: 30px;
-    -fx-translate-x: 30px;
+    -fx-max-width: 40px;
+    -fx-max-height: 10px;
+    -fx-translate-x: 10px;
+    -fx-translate-y: 35px;
+    -fx-font-size: 14px;
 }
 
 .border-button {
     -fx-min-width: 160px;
     -fx-min-height: 50px;
     -fx-translate-x: 10px;
-}
-
-.border-set-button {
-    -fx-min-width: 70px;
-    -fx-min-height: 30px;
-    -fx-translate-x: 100px;
-}
-
-.border-above-button {
-    -fx-translate-y: 260px;
 }
 
 .border-default-button {

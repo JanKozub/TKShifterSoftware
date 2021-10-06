@@ -16,20 +16,19 @@ public class BordersConfig extends Group {
         Label neutralLabel = new Label("Neutral Borders:");
         neutralLabel.getStyleClass().add("neutral-label");
 
-        BorderField borderField1 = new BorderField(serialService, "1");
-        BorderField borderField2 = new BorderField(serialService, "2");
-        BorderField borderField3 = new BorderField(serialService, "3");
-        BorderField borderField4 = new BorderField(serialService, "4");
-
-        BorderField borderFieldU = new BorderField(serialService, "U");
-        BorderField borderFieldL = new BorderField(serialService, "L");
+        OffsetField borderField1 = new OffsetField(serialService, "1");
+        OffsetField borderField2 = new OffsetField(serialService, "2");
+        OffsetField borderField3 = new OffsetField(serialService, "3");
+        OffsetField borderField4 = new OffsetField(serialService, "4");
+//
+//        BorderField borderFieldU = new BorderField(serialService, "U");
+//        BorderField borderFieldL = new BorderField(serialService, "L");
 
         Button defaultButton = new Button("Set Default");
         defaultButton.getStyleClass().addAll("border-button", "border-default-button");
 
         getChildren().addAll(
-                offsetLabel, background, borderField1, borderField2, borderField3,
-                neutralLabel, borderFieldU, borderFieldL, borderField4, defaultButton
+                offsetLabel, background, borderField1, borderField2, borderField3, borderField4, defaultButton
         );
     }
 }

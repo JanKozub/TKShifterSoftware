@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="TK-Shifter-Software-Project" />
         <module name="TK Shifter Software Project" />
+        <module name="TKShifterSoftware" />
       </profile>
     </annotationProcessing>
   </component>

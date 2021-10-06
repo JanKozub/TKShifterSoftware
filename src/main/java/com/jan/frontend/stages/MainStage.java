@@ -5,9 +5,9 @@ import com.jan.backend.serial.SerialData;
 import com.jan.backend.serial.SerialPortErrorEvent;
 import com.jan.backend.serial.SerialService;
 import com.jan.backend.serial.SerialServiceListener;
-import com.jan.frontend.components.bordersConfig.BordersConfig;
 import com.jan.frontend.components.FlagsGroup;
 import com.jan.frontend.components.alerts.ReadCurrentDataErrorAlert;
+import com.jan.frontend.components.bordersConfig.BordersConfig;
 import com.jan.frontend.components.mainStage.MyRadioGroup;
 import com.jan.frontend.stages.config.HConfigStage;
 import com.jan.frontend.stages.config.SeqConfigStage;
@@ -25,25 +25,12 @@ public class MainStage extends Stage {
 
     private final Label infoLabel = new Label();
     private final SerialService serialService;
-    private final SerialServiceListener serialServiceListener;
     private int mode;
 
     public MainStage(SerialService serialService) {
         this.serialService = serialService;
 
-        SerialServiceListener serialServiceListener = new SerialServiceListener() {
-            @Override
-            public void onSerialPortError(SerialPortErrorEvent event) {
-                showSerialEvent();
-            }
-
-            @Override
-            public void onValueUpdate(SerialData data) {
-                updateValues(data);
-            }
-        };
-        serialService.addListener(serialServiceListener);
-        this.serialServiceListener = serialServiceListener;
+        initSerialCom(this);
 
         ImageView logo = new ImageView(ImageService.getImage("/icons/logo100x60.png"));
         logo.getStyleClass().add("logo");
@@ -79,17 +66,27 @@ public class MainStage extends Stage {
         scene.getStylesheets().add("/MainPage.css");
         setScene(scene);
         setResizable(false);
+    }
 
+    private void initSerialCom(Stage stage) {
+        SerialServiceListener serialServiceListener = new SerialServiceListener() {
+            @Override
+            public void onSerialPortError(SerialPortErrorEvent event) {
+                Platform.runLater(() ->
+                        new ReadCurrentDataErrorAlert()
+                                .showAndWait());
+                stage.close();
+                serialService.onClose(this);
+            }
+
+            @Override
+            public void onValueUpdate(SerialData data) {
+                mode = data.getMode();
+                Platform.runLater(() -> infoLabel.setText(data.getMessage()));
+            }
+        };
+        serialService.addListener(serialServiceListener);
         setOnCloseRequest(windowEvent -> serialService.onClose(serialServiceListener));
-    }
-
-    private void showSerialEvent() {
-        Platform.runLater(() -> new ReadCurrentDataErrorAlert(serialService, serialServiceListener, this).showAndWait());
-    }
-
-    private void updateValues(SerialData data) {
-        mode = data.getMode();
-        Platform.runLater(() -> infoLabel.setText(data.getMessage()));
     }
 
     private void onConfigButtonClick(Stage stage1, Stage stage2) {

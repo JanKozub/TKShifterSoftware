@@ -5,12 +5,8 @@ import com.jan.backend.serial.SerialServiceListener;
 import javafx.stage.Stage;
 
 public class ReadCurrentDataErrorAlert extends UniversalErrorAlert {
-    public ReadCurrentDataErrorAlert(SerialService serialService, SerialServiceListener serialServiceListener, Stage stage) {
+    public ReadCurrentDataErrorAlert() {
         setHeaderText("Serial communication error");
         setContentText("Failed to read data from device(probably cable was disconnected)");
-        setOnCloseRequest(c -> {
-            stage.close();
-            serialService.onClose(serialServiceListener);
-        });
     }
 }

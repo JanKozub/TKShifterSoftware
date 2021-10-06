@@ -17,8 +17,8 @@ public class NumberField extends TextField {
             setText(newValue.replaceAll("[^\\d]", ""));
         }
 
-        if (newValue.length() > 4) {
-            setText(newValue.substring(0,4));
+        if (newValue.length() > 2) {
+            setText(newValue.substring(0,2));
         }
     }
 }
